@@ -2,7 +2,7 @@ server {
     listen 80;
     root /var/www/html;
     index index.html index.php;
-    server_name example.localhost;  # TODO: ../../.env -> DOMAINS=example.localhost,example1.localhost
+    server_name example.localhost;
 
     charset utf-8;
 
@@ -37,10 +37,10 @@ server {
 }
 server {
     listen 80;
-    server_name pma.example.localhost; # TODO: ../../.env -> PMA_DOMAIN=
+    server_name pma.example.localhost;
 
     location / {
-        proxy_pass http://phpmyadmin:80;
+        proxy_pass http://mysql:8080;
         proxy_http_version 1.1;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwared-For $proxy_add_x_forwarded_for;

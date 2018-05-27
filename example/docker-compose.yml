@@ -45,7 +45,7 @@ services:
     expose:
       - "80"
     environment:
-      PMA_HOST: ${PMA_DOMAINS}
+      PMA_HOST: ${PMA_DOMAIN}
     depends_on:
       - mysql
     networks:
