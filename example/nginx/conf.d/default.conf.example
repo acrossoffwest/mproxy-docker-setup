@@ -40,7 +40,7 @@ server {
     server_name pma.example.localhost;
 
     location / {
-        proxy_pass http://mysql:8080;
+        proxy_pass http://phpmyadmin:80;
         proxy_http_version 1.1;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwared-For $proxy_add_x_forwarded_for;

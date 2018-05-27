@@ -14,7 +14,7 @@ services:
       - nginx-proxy-network
       - database
     environment:
-      - VIRTUAL_HOST=${DOMAINS},${PMA_DOMAINS}
+      - VIRTUAL_HOST=${DOMAINS},${PMA_DOMAIN}
 
   php:
     image: zurbaev/php71-common
@@ -45,7 +45,7 @@ services:
     expose:
       - "80"
     environment:
-      PMA_HOST: ${PMA_DOMAIN}
+      PMA_HOST: mysql
     depends_on:
       - mysql
     networks:
