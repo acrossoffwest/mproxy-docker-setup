@@ -2,8 +2,8 @@ version: '2'
 services:
     nginx-proxy:
         image: jwilder/nginx-proxy
-        restart: always
         container_name: nginx-proxy
+	restart: always
         ports:
         - "80:80"
         volumes:
@@ -13,8 +13,8 @@ services:
 
     whoami:
         image: jwilder/whoami
-        restart: always
         container_name: whoami
+	restart: always
         environment:
         - VIRTUAL_HOST=whoami.local
         networks:
