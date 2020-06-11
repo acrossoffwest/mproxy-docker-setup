@@ -2,7 +2,7 @@ version: '2'
 services:
     nginx-proxy:
         build: ./build
-        restart: always
+        restart: $RESTART
         environment: 
           - DHPARAM_GENERATION=false
         ports:
@@ -15,26 +15,31 @@ services:
         networks:
           - nginx-proxy-network
 
-    letsencrypt:
-        image: jrcs/letsencrypt-nginx-proxy-companion
-        restart: always
-        environment: 
-          - "DEFAULT_EMAIL=${DEFAULT_EMAIL}"
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-        volumes_from: 
-          - container:nginx-proxy_nginx-proxy_1
-        networks:
-          - nginx-proxy-network
-
     whoami:
         image: jwilder/whoami
-        restart: always
+        restart: $RESTART
         container_name: whoami
         environment:
           - VIRTUAL_HOST=whoami.local
         networks:
           - nginx-proxy-network
+
+#    letsencrypt:
+#        image: jrcs/letsencrypt-nginx-proxy-companion
+#        restart: $RESTART
+#        depends_on:
+#          - nginx-proxy
+#        environment:
+#          - "DEFAULT_EMAIL=${DEFAULT_EMAIL}"
+#        volumes:
+#          - /var/run/docker.sock:/tmp/docker.sock:ro
+#          - /etc/nginx/vhost.d
+#          - /usr/share/nginx/html
+#        volumes_from:
+#          - container:nginx-proxy_nginx-proxy_1
+#        networks:
+#          - nginx-proxy-network
+
 networks:
   nginx-proxy-network:
     external:
