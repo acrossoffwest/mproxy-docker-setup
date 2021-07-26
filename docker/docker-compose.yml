@@ -16,7 +16,7 @@ services:
           - nginx-proxy-network
 
     whoami:
-        image: jwilder/whoami
+        image: acrossoffwest/whoami:master
         restart: $RESTART
         container_name: whoami
         environment:
