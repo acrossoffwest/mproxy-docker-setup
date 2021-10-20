@@ -1,46 +1,50 @@
-version: '2'
+version: '3.3'
+
 services:
-    nginx-proxy:
-        build: ./build
-        restart: $RESTART
-        environment: 
-          - DHPARAM_GENERATION=false
-        ports:
-          - "80:80"
-          - "443:443"
-        volumes:
-          - /var/run/docker.sock:/tmp/docker.sock:ro
-          - /etc/nginx/vhost.d
-          - /usr/share/nginx/html
-        networks:
-          - nginx-proxy-network
+  nginx-proxy:
+    restart: ${RESTART:-"no"}
+    build: ./build
+    environment:
+      - DHPARAM_GENERATION=${DHPARAM_GENERATION:-false}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/tmp/docker.sock:ro
+      - reverseproxy_vhost:/etc/nginx/vhost.d
+      - reverseproxy_html:/usr/share/nginx/html
+      - ${NGINX_CONF_FILE:-./nginx.d/nginx.conf}:/etc/nginx/nginx.conf
+    networks:
+      - reverseproxy_default
 
-    whoami:
-        image: acrossoffwest/whoami:master
-        restart: $RESTART
-        container_name: whoami
-        environment:
-          - VIRTUAL_HOST=whoami.local
-        networks:
-          - nginx-proxy-network
+  whoami:
+    restart: ${RESTART:-"no"}
+    image: acrossoffwest/whoami:master
+    environment:
+      - VIRTUAL_HOST=whoami.local
+    networks:
+      - reverseproxy_default
 
-#    letsencrypt:
-#        image: jrcs/letsencrypt-nginx-proxy-companion
-#        restart: $RESTART
-#        depends_on:
-#          - nginx-proxy
-#        environment:
-#          - "DEFAULT_EMAIL=${DEFAULT_EMAIL}"
-#        volumes:
-#          - /var/run/docker.sock:/tmp/docker.sock:ro
-#          - /etc/nginx/vhost.d
-#          - /usr/share/nginx/html
-#        volumes_from:
-#          - container:nginx-proxy_nginx-proxy_1
-#        networks:
-#          - nginx-proxy-network
+  letsencrypt:
+      restart: ${RESTART:-"no"}
+      profiles:
+        - production
+      image: jrcs/letsencrypt-nginx-proxy-companion
+      depends_on:
+        - nginx-proxy
+      environment:
+        - "DEFAULT_EMAIL=${DEFAULT_EMAIL}"
+      volumes:
+        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/tmp/docker.sock:ro
+        - reverseproxy_vhost:/etc/nginx/vhost.d
+        - reverseproxy_html:/usr/share/nginx/html
+      networks:
+        - reverseproxy_default
 
 networks:
-  nginx-proxy-network:
-    external:
-      name: reverseproxy_default
+  reverseproxy_default:
+    external: true
+
+volumes:
+  reverseproxy_vhost:
+  reverseproxy_html:
