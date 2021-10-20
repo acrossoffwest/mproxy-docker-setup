@@ -1,22 +1,44 @@
 # Docker jwilder/nginx-proxy for multiple nginx containers
 
-Configure docker/.env file
+Configure environment
 
-    cd ./docker/ && cp .env.example .env
+    bash init.sh
+
+init.sh script will create necessary network: `reverseproxy_default`  and create env file: `docker/.env`
+
+## Environment variables (./docker/.env)
+
+    # Your email for LetsEncrypt
+    DEFAULT_EMAIL=no-reply@example.com
+
+    DHPARAM_GENERATION=false
     
-Fill variables: `DEFAULT_EMAIL` and `RESTART`
+    # Default Nginx main configuration
+    NGINX_CONF_FILE=./nginx.d/nginx.conf
+    
+    COMPOSE_PROJECT_NAME=reverse_proxy
+    
+    # Use `production` for running LetsEncrypt on local environment you probably won't use SSL certificates
+    # in that case just remove COMPOSE_PROFILES variable
+    COMPOSE_PROFILES=production
+    
+    # On production environment use `always`
+    RESTART="no"
+    
+    # If you place your docker.sock file in specific location you could specify it here
+    DOCKER_SOCK_FILE=/var/run/docker.sock
 
 ---
-
-
-Before run `docker-compose up` you need create external docker network
-
-    # docker network create reverseproxy_default
-
-Or, run bash script
-
-    # bash ./create_network.sh
     
 # LetsEncrypt
 
-If you wanna use LetsEncrypt you can uncomment `letsencrypt` service in `docker/docker-compose.yml` config file and to up `docker-compose up -d` again.
+Use compose profile: production
+
+.env:
+
+    ...
+    COMPOSE_PROFILES=production
+    ...
+    
+
+
