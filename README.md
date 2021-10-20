@@ -1,4 +1,3 @@
-![img.png](assets/img.png)
 # Docker jwilder/nginx-proxy for multiple nginx containers
 
 Configure environment
