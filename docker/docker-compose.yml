@@ -35,7 +35,7 @@ services:
       environment:
         - "DEFAULT_EMAIL=${DEFAULT_EMAIL}"
       volumes:
-        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/tmp/docker.sock:ro
+        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock:ro
         - reverseproxy_vhost:/etc/nginx/vhost.d
         - reverseproxy_html:/usr/share/nginx/html
       networks:
