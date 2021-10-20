@@ -35,6 +35,8 @@ services:
         - nginx-proxy
       environment:
         - DEFAULT_EMAIL=${DEFAULT_EMAIL}
+      volumes:
+        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock:ro
       volumes_from:
         - nginx-proxy
       networks:
