@@ -11,7 +11,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/tmp/docker.sock:ro
+      - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock:ro
       - reverseproxy_vhost:/etc/nginx/vhost.d
       - reverseproxy_html:/usr/share/nginx/html
       - ${NGINX_CONF_FILE:-./nginx.d/nginx.conf}:/etc/nginx/nginx.conf
@@ -35,11 +35,8 @@ services:
         - nginx-proxy
       environment:
         - DEFAULT_EMAIL=${DEFAULT_EMAIL}
-        - NGINX_PROXY_CONTAINER="${COMPOSE_PROJECT_NAME}_nginx-proxy"
-      volumes:
-        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock:ro
-        - reverseproxy_vhost:/etc/nginx/vhost.d
-        - reverseproxy_html:/usr/share/nginx/html
+      volumes_from:
+        - nginx-proxy
       networks:
         - reverseproxy_default
 
