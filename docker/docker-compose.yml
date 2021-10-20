@@ -3,6 +3,7 @@ version: '3.3'
 services:
   nginx-proxy:
     restart: ${RESTART:-"no"}
+    container_name: "${COMPOSE_PROJECT_NAME}_nginx-proxy"
     build: ./build
     environment:
       - DHPARAM_GENERATION=${DHPARAM_GENERATION:-false}
@@ -33,7 +34,8 @@ services:
       depends_on:
         - nginx-proxy
       environment:
-        - "DEFAULT_EMAIL=${DEFAULT_EMAIL}"
+        - DEFAULT_EMAIL=${DEFAULT_EMAIL}
+        - NGINX_PROXY_CONTAINER="${COMPOSE_PROJECT_NAME}_nginx-proxy"
       volumes:
         - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock:ro
         - reverseproxy_vhost:/etc/nginx/vhost.d
