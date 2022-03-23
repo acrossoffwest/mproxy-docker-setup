@@ -11,10 +11,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/tmp/docker.sock:ro
+      - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/tmp/docker.sock
       - reverseproxy_vhost:/etc/nginx/vhost.d
       - reverseproxy_html:/usr/share/nginx/html
       - ${NGINX_CONF_FILE:-./nginx.d/nginx.conf}:/etc/nginx/nginx.conf
+      - certs:/etc/nginx/certs:rw
     networks:
       - reverseproxy_default
 
@@ -36,7 +37,8 @@ services:
       environment:
         - DEFAULT_EMAIL=${DEFAULT_EMAIL}
       volumes:
-        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock:ro
+        - certs:/etc/nginx/certs:rw
+        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock
       volumes_from:
         - nginx-proxy
       networks:
@@ -49,3 +51,4 @@ networks:
 volumes:
   reverseproxy_vhost:
   reverseproxy_html:
+  certs:
