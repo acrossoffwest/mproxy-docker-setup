@@ -1,8 +1,6 @@
-version: '3.3'
-
 services:
   nginx-proxy:
-    restart: ${RESTART:-"no"}
+    restart: ${RESTART:-"unless-stopped"}
     container_name: "${COMPOSE_PROJECT_NAME}_nginx-proxy"
     build: ./build
     environment:
@@ -20,7 +18,7 @@ services:
       - reverseproxy_default
 
   whoami:
-    restart: ${RESTART:-"no"}
+    restart: ${RESTART:-"unless-stopped"}
     image: acrossoffwest/whoami:master
     environment:
       - VIRTUAL_HOST=whoami.local
@@ -28,21 +26,21 @@ services:
       - reverseproxy_default
 
   letsencrypt:
-      restart: ${RESTART:-"no"}
-      profiles:
-        - production
-      image: jrcs/letsencrypt-nginx-proxy-companion
-      depends_on:
-        - nginx-proxy
-      environment:
-        - DEFAULT_EMAIL=${DEFAULT_EMAIL}
-      volumes:
-        - certs:/etc/nginx/certs:rw
-        - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock
-      volumes_from:
-        - nginx-proxy
-      networks:
-        - reverseproxy_default
+    restart: ${RESTART:-"unless-stopped"}
+    profiles:
+      - production
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    depends_on:
+      - nginx-proxy
+    environment:
+      - DEFAULT_EMAIL=${DEFAULT_EMAIL}
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - ${DOCKER_SOCK_FILE:-/var/run/docker.sock}:/var/run/docker.sock
+    volumes_from:
+      - nginx-proxy
+    networks:
+      - reverseproxy_default
 
 networks:
   reverseproxy_default:
