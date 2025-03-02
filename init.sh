@@ -2,4 +2,8 @@
 
 bash ./create_network.sh
 
-cd ./docker && cp .env.example .env && cd ./..
+if [ ! -f .env ]; then
+    cd ./docker && cp .env.example .env && cd ./..
+fi
+
+docker compose up -d
